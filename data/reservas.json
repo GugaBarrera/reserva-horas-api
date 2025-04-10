@@ -1,0 +1,37 @@
+[
+  {
+    "nombre": "Juan Pérez",
+    "email": "juanperez@mail.com",
+    "telefono": "987654321",
+    "motivo": "Consulta sobre contrato",
+    "hora": "14:00"
+  },
+  {
+    "nombre": "Pedro Gómez",
+    "email": "pedro@mail.com",
+    "telefono": "912345678",
+    "motivo": "Consulta laboral",
+    "hora": "15:00"
+  },
+  {
+    "nombre": "Pedro Gómez",
+    "email": "pedro@mail.com",
+    "telefono": "912345678",
+    "motivo": "Consulta laboral",
+    "hora": "10:00"
+  },
+  {
+    "nombre": "Pedro Gómez",
+    "email": "pedro@mail.com",
+    "telefono": "912345678",
+    "motivo": "Consulta laboral",
+    "hora": "10:30"
+  },
+  {
+    "nombre": "Pedro Gómez",
+    "email": "pedro@mail.com",
+    "telefono": "912345678",
+    "motivo": "Consulta laboral",
+    "hora": "11:30"
+  }
+]
