@@ -16,20 +16,18 @@ app.get('/horas', (req, res) => {
             return res.status(500).json({ message: 'Error al leer las reservas' });
         }
 
-        const reservas = JSON.parse(data);
-
-        // Generamos el horario entre 10:00 y 17:30 cada 30 minutos
         const horasDisponibles = [];
-        for (let i = 10; i <= 17; i++) {
-            for (let j = 0; j < 60; j += 30) {
-                const hora = `${i}:${j === 0 ? '00' : '30'}`;
-                const horaReservada = reservas.some(reserva => reserva.hora === hora);
-                if (!horaReservada) {
-                    horasDisponibles.push(hora);
-                }
-            }
-        }
+for (let hora = 9; hora < 17; hora++) {
+    if (hora === 13) continue; // Saltar la hora de colación
 
+    const bloques = [`${hora}:00`, `${hora}:30`];
+    for (const h of bloques) {
+        const horaReservada = reservas.some(reserva => reserva.hora === h);
+        if (!horaReservada) {
+            horasDisponibles.push(h);
+        }
+    }
+}
         res.json({ horasDisponibles, reservas });
     });
 });
