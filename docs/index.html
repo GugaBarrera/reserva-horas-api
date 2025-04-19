@@ -19,13 +19,15 @@
   <p id="mensaje"></p>
 
   <script>
+    const API_URL = 'https://reserva-api-5cqt.onrender.com';
+
     const selectHoras = document.getElementById('selectHoras');
     const formulario = document.getElementById('formulario');
     const mensaje = document.getElementById('mensaje');
 
     async function cargarHoras() {
       try {
-        const response = await fetch('https://localhost:3001/horas');
+        const response = await fetch(`${API_URL}/horas`);
         const data = await response.json();
         selectHoras.innerHTML = ''; // limpiar opciones
         data.horasDisponibles.forEach(hora => {
@@ -45,7 +47,7 @@
       const reserva = Object.fromEntries(formData);
 
       try {
-        const res = await fetch('https://localhost:3001/reservar', {
+        const res = await fetch(`${API_URL}/reservar`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -69,3 +71,4 @@
   </script>
 </body>
 </html>
+
