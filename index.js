@@ -1,14 +1,7 @@
 const express = require('express');
 const fs = require('fs');
-const https = require('https'); // ✅ Agregado
 const cors = require('cors');
 const app = express();
-
-// Leer certificados SSL autofirmados
-const options = {
-  key: fs.readFileSync('./cert.key'),
-  cert: fs.readFileSync('./cert.crt')
-};
 
 // Configuración de la app
 app.set('port', process.env.PORT || 3001);
@@ -71,14 +64,14 @@ app.post('/reservar', (req, res) => {
         return res.status(500).json({ message: 'Error al guardar la reserva' });
       }
 
-      console.log("Reserva recibida:", nuevaReserva); // 👀 Agregado por consola
-
+      console.log("Reserva recibida:", nuevaReserva);
       res.status(201).json({ message: 'Reserva realizada con éxito', reserva: nuevaReserva });
     });
   });
 });
 
-// Iniciar servidor HTTPS
-https.createServer(options, app).listen(app.get('port'), () => {
-  console.log(`Servidor HTTPS iniciado en el puerto ${app.get('port')}`);
+// Iniciar servidor (Render usa HTTPS automáticamente)
+app.listen(app.get('port'), () => {
+  console.log(`Servidor iniciado en el puerto ${app.get('port')}`);
 });
+
