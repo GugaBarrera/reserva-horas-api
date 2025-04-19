@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Calendario de Horas</title>
+</head>
+<body>
+  <h1>Horas disponibles y reservadas</h1>
+
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Hora</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody id="tabla-horas">
+    </tbody>
+  </table>
+
+  <script>
+    async function cargarHoras() {
+      try {
+        const res = await fetch("http://localhost:3001/horas");
+        const data = await res.json();
+
+        const tbody = document.getElementById("tabla-horas");
+        tbody.innerHTML = "";
+
+        // Mostrar reservas
+        data.reservas.forEach(r => {
+          const fila = document.createElement("tr");
+          fila.innerHTML = `<td>${r.hora}</td><td><strong>Reservada</strong> (${r.nombre})</td>`;
+          tbody.appendChild(fila);
+        });
+
+        // Mostrar disponibles
+        data.horasDisponibles.forEach(h => {
+          const fila = document.createElement("tr");
+          fila.innerHTML = `<td>${h}</td><td>Disponible</td>`;
+          tbody.appendChild(fila);
+        });
+      } catch (error) {
+        console.error("Error al cargar las horas:", error);
+      }
+    }
+
+    cargarHoras();
+  </script>
+</body>
+</html>
