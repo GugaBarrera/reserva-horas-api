@@ -13,7 +13,10 @@
     <input type="tel" name="telefono" placeholder="Teléfono" required /><br />
     <input type="text" name="motivo" placeholder="Motivo" required /><br />
     <select name="hora" id="selectHoras" required></select><br />
+
     <button type="submit">Reservar</button>
+    <br /><br />
+    <button type="button" onclick="simularPago()">Pagar con Webpay</button>
   </form>
 
   <p id="mensaje"></p>
@@ -68,7 +71,13 @@
     });
 
     cargarHoras();
+
+    function simularPago() {
+      alert("Redirigiendo a Webpay...");
+      setTimeout(() => {
+        window.location.href = "confirmacion.html";
+      }, 1500);
+    }
   </script>
 </body>
 </html>
-
