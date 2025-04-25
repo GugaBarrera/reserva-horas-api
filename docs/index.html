@@ -17,6 +17,10 @@
     <button type="submit">Reservar</button>
     <br /><br />
     <button type="button" onclick="simularPago()">Pagar con Webpay</button>
+    <br /><br />
+    <button type="button" onclick="solicitarDespacho()">Solicitar Despacho</button>
+    <br /><br />
+    <button type="button" onclick="verSeguimiento()">Ver estado del envío</button>
   </form>
 
   <p id="mensaje"></p>
@@ -32,7 +36,7 @@
       try {
         const response = await fetch(`${API_URL}/horas`);
         const data = await response.json();
-        selectHoras.innerHTML = ''; // limpiar opciones
+        selectHoras.innerHTML = '';
         data.horasDisponibles.forEach(hora => {
           const option = document.createElement('option');
           option.value = hora;
@@ -63,21 +67,29 @@
 
         if (res.ok) {
           formulario.reset();
-          await cargarHoras(); // refrescar select
+          await cargarHoras();
         }
       } catch (error) {
         mensaje.textContent = 'Error al enviar reserva.';
       }
     });
 
-    cargarHoras();
-
     function simularPago() {
-      alert("Redirigiendo a Webpay...");
+      alert("🔐 Redirigiendo al portal Webpay con token de prueba: \n\nTOKEN_WEBPAY=abc123xyz789");
       setTimeout(() => {
         window.location.href = "confirmacion.html";
       }, 1500);
     }
+
+    function solicitarDespacho() {
+      alert("📦 Solicitud enviada a plataforma de despacho.\n\nTOKEN_DESPACHO=desp123tok456");
+    }
+
+    function verSeguimiento() {
+      alert("🚚 Conectando a plataforma de seguimiento...\n\nTOKEN_SEGUIMIENTO=track789abc456");
+    }
+
+    cargarHoras();
   </script>
 </body>
 </html>
