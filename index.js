@@ -1,6 +1,6 @@
 const express = require('express');
-const fs = require('fs');
 const cors = require('cors');
+const pool = require('./database');
 const app = express();
 
 // Configuración de la app
@@ -11,66 +11,76 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Endpoint GET: Obtener horas disponibles y reservadas
-app.get('/horas', (req, res) => {
-  fs.readFile('./data/reservas.json', 'utf-8', (err, data) => {
+// Endpoint GET: Obtener todas las reservas
+app.get('/reservas', (req, res) => {
+  pool.query('SELECT * FROM reservas', (err, results) => {
     if (err) {
-      return res.status(500).json({ message: 'Error al leer las reservas' });
+      console.error("Error al obtener reservas:", err);
+      return res.status(500).json({ message: 'Error al obtener las reservas' });
     }
-
-    const reservas = JSON.parse(data);
-
-    const horasDisponibles = [];
-    for (let hora = 9; hora < 17; hora++) {
-      if (hora === 13) continue; // Saltar la hora de colación
-
-      const bloques = [`${hora}:00`, `${hora}:30`];
-      for (const h of bloques) {
-        const horaReservada = reservas.some(reserva => reserva.hora === h);
-        if (!horaReservada) {
-          horasDisponibles.push(h);
-        }
-      }
-    }
-
-    res.json({ horasDisponibles, reservas });
+    res.json(results);
   });
 });
 
 // Endpoint POST: Registrar una nueva reserva
-app.post('/reservar', (req, res) => {
-  const { nombre, email, telefono, motivo, hora } = req.body;
+app.post('/reservas', (req, res) => {
+  const { fecha, hora, motivo, usuario_id } = req.body;
 
-  if (!nombre || !email || !telefono || !motivo || !hora) {
+  if (!fecha || !hora || !motivo || !usuario_id) {
     return res.status(400).json({ message: 'Faltan datos obligatorios' });
   }
 
-  fs.readFile('./data/reservas.json', 'utf-8', (err, data) => {
+  const query = 'INSERT INTO reservas (fecha, hora, motivo, usuario_id) VALUES (?, ?, ?, ?)';
+  pool.query(query, [fecha, hora, motivo, usuario_id], (err, result) => {
     if (err) {
-      return res.status(500).json({ message: 'Error al leer las reservas' });
+      console.error("Error al registrar reserva:", err);
+      return res.status(500).json({ message: 'Error al registrar la reserva' });
     }
 
-    const reservas = JSON.parse(data);
-    const horaReservada = reservas.some(reserva => reserva.hora === hora);
-    if (horaReservada) {
-      return res.status(400).json({ message: 'La hora seleccionada ya está reservada' });
-    }
-
-    const nuevaReserva = { nombre, email, telefono, motivo, hora };
-    reservas.push(nuevaReserva);
-
-    fs.writeFile('./data/reservas.json', JSON.stringify(reservas, null, 2), (err) => {
-      if (err) {
-        return res.status(500).json({ message: 'Error al guardar la reserva' });
+    res.status(201).json({
+      message: 'Reserva registrada con éxito',
+      reserva: {
+        id: result.insertId,
+        fecha,
+        hora,
+        motivo,
+        usuario_id
       }
-
-      console.log("Reserva recibida:", nuevaReserva);
-      res.status(201).json({ message: 'Reserva realizada con éxito', reserva: nuevaReserva });
     });
   });
 });
 
-// Iniciar servidor (Render usa HTTPS automáticamente)
+// Endpoint PUT: Actualizar una reserva existente
+app.put('/reservas/:id', (req, res) => {
+  const { fecha, hora, motivo, usuario_id } = req.body;
+  const { id } = req.params;
+
+  const query = 'UPDATE reservas SET fecha=?, hora=?, motivo=?, usuario_id=? WHERE id=?';
+  pool.query(query, [fecha, hora, motivo, usuario_id, id], (err, result) => {
+    if (err) {
+      console.error("Error al actualizar reserva:", err);
+      return res.status(500).json({ message: 'Error al actualizar la reserva' });
+    }
+
+    res.json({ message: 'Reserva actualizada correctamente' });
+  });
+});
+
+// Endpoint DELETE: Eliminar una reserva
+app.delete('/reservas/:id', (req, res) => {
+  const { id } = req.params;
+
+  pool.query('DELETE FROM reservas WHERE id=?', [id], (err, result) => {
+    if (err) {
+      console.error("Error al eliminar reserva:", err);
+      return res.status(500).json({ message: 'Error al eliminar la reserva' });
+    }
+
+    res.json({ message: 'Reserva eliminada correctamente' });
+  });
+});
+
+// Iniciar servidor
 app.listen(app.get('port'), () => {
   console.log(`Servidor iniciado en el puerto ${app.get('port')}`);
 });
