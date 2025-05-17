@@ -50,6 +50,5 @@ Las operaciones CRUD fueron validadas utilizando **Postman**, y las inserciones 
 ## 👥 Autores
 
 - **Guga**
-- **Jamoncete**
+- **Jamonote**
 - **Ray**
-
