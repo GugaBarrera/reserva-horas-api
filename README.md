@@ -47,3 +47,9 @@ Las operaciones CRUD fueron validadas utilizando **Postman**, y las inserciones 
    git clone https://github.com/GugaBarrera/reserva-horas-api.git
    cd reserva-horas-api
 
+## 👥 Autores
+
+- **Guga**
+- **Jamoncete**
+- **Ray**
+
